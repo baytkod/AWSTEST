@@ -4,19 +4,23 @@ services:
         build: ./frontend
         ports:
             - "3000:3000"
-        depends_on:
-            - backend
-        environment:
-            - NEXT_PUBLIC_API_URL=http://localhost:3001
 
     backend:
         build: ./backend
         ports:
             - "3001:3001"
-        depends_on:
-            - db
         environment:
             - DATABASE_URL=mysql://user:password@db:3306/mydatabase
+
+    nginx:
+        build:
+            context: .
+            dockerfile: Dockerfile.nginx
+        ports:
+            - "80:80"
+        depends_on:
+            - frontend
+            - backend
 
     db:
         image: mysql:8.0
